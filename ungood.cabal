@@ -3,7 +3,7 @@
 
 name:                ungood
 version:             0.1.0.0
-synopsis:            C-- compiler written for Translators class @OSU
+synopsis:            C- compiler written for Translators class @OSU
 -- description:         
 homepage:            https://github.com/rutgerfarry/ungood
 license:             MIT

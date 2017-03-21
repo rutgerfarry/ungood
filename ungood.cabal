@@ -7,8 +7,7 @@ license:             MIT
 license-file:        LICENSE
 author:              Rutger Farry
 maintainer:          rutgerfarry@gmail.com
--- copyright:           
-category:            Development
+category:            Compiler
 build-type:          Simple
 extra-source-files:  ChangeLog.md
 cabal-version:       >=1.10
@@ -24,6 +23,7 @@ executable ungood
     , haskeline        >= 0.7
     , parsec           >= 3.1
     , mtl              >= 2.1
+  hs-source-dirs:      src
   default-language:    Haskell2010
   ghc-options:
     -fwarn-tabs

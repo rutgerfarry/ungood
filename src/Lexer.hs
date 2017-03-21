@@ -8,19 +8,21 @@ import qualified Text.Parsec.Token as Tok
 lexer :: Tok.TokenParser ()
 lexer = Tok.makeTokenParser style
   where
-    ops = ["+", "*", "-", ";"]
-    names = ["def", "extern"]
+    ops = ["+", "-", "*", "/"
+          , "<", "<=", ">", ">="
+          , "==", "!=", "="
+          , ";", ","
+          ]
+    names = ["else", "if", "int", "return", "void", "while"]
     style = emptyDef {
-              Tok.commentLine = "#"
+              Tok.commentStart = "/*"
+              , Tok.commentEnd = "*/"
               , Tok.reservedOpNames = ops
               , Tok.reservedNames = names
               }
 
 integer :: Parser Integer
 integer = Tok.integer lexer
-
-float :: Parser Double
-float = Tok.float lexer
 
 parens :: Parser a -> Parser a
 parens = Tok.parens lexer

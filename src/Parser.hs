@@ -19,12 +19,7 @@ table = [[binary "*" Times Ex.AssocLeft,
 int :: Parser Expr
 int = do
   n <- integer
-  return $ Float (fromInteger n)
-
-floating :: Parser Expr
-floating = do
-  n <- float
-  return $ Float n
+  return $ Int n
 
 expr :: Parser Expr
 expr = Ex.buildExpressionParser table factor
@@ -36,18 +31,12 @@ variable = do
 
 function :: Parser Expr
 function = do
-  reserved "def"
+  reserved "int"
+  reserved "void"
   name <- identifier
   args <- parens $ many variable
   body <- expr
   return $ Function name args body
-
-extern :: Parser Expr
-extern = do
-  reserved "extern"
-  name <- identifier
-  args <- parens $ many variable
-  return $ Extern name args
 
 call :: Parser Expr
 call = do
@@ -56,17 +45,14 @@ call = do
   return $ Call name args
 
 factor :: Parser Expr
-factor = try floating
-      <|> try int
-      <|> try extern
+factor = try int
       <|> try function
       <|> try call
       <|> variable
       <|> parens expr
 
 defn :: Parser Expr
-defn = try extern
-    <|> try function
+defn = try function
     <|> expr
 
 contents :: Parser a -> Parser a
@@ -87,4 +73,3 @@ parseExpr s = parse (contents expr) "<stdin>" s
 
 parseToplevel :: String -> Either ParseError [Expr]
 parseToplevel s = parse (contents toplevel) "<stdin>" s
-

@@ -3,7 +3,7 @@ module Syntax where
 type Name = String
 
 data Expr
-  = Float Double
+  = Int Integer 
   | BinOp Op Expr Expr
   | Var String
   | Call Name [Expr]

@@ -27,6 +27,9 @@ integer = Tok.integer lexer
 parens :: Parser a -> Parser a
 parens = Tok.parens lexer
 
+brackets :: Parser a -> Parser a
+brackets = Tok.brackets lexer
+
 commaSep :: Parser a -> Parser [a]
 commaSep = Tok.commaSep lexer
 
@@ -41,4 +44,3 @@ reserved = Tok.reserved lexer
 
 reservedOp :: String -> Parser ()
 reservedOp = Tok.reservedOp lexer
-

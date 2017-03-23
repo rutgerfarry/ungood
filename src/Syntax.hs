@@ -3,12 +3,16 @@ module Syntax where
 type Name = String
 
 data Expr
-  = Int Integer 
+  = IntValue Integer
+  | Var TypeSpecifier Name
   | BinOp Op Expr Expr
-  | Var String
   | Call Name [Expr]
-  | Function Name [Expr] Expr
-  | Extern Name [Expr]
+  | Function TypeSpecifier Name [Expr] Expr
+  deriving (Eq, Ord, Show)
+
+data TypeSpecifier
+  = Int
+  | Void
   deriving (Eq, Ord, Show)
 
 data Op
@@ -17,4 +21,3 @@ data Op
   | Times
   | Divide
   deriving (Eq, Ord, Show)
-

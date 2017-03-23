@@ -11,32 +11,36 @@ import Syntax
 
 binary s f assoc = Ex.Infix (reservedOp s >> return (BinOp f)) assoc
 
-table = [[binary "*" Times Ex.AssocLeft,
+binops = [[binary "*" Times Ex.AssocLeft,
           binary "/" Divide Ex.AssocLeft]
         ,[binary "+" Plus Ex.AssocLeft,
           binary "-" Minus Ex.AssocLeft]]
 
-int :: Parser Expr
-int = do
-  n <- integer
-  return $ Int n
+typeSpecifier :: Parser TypeSpecifier
+typeSpecifier = do 
+  t <- choice [reserved "int" >> return Int
+              , reserved "void" >> return Void]
+  return t
+
+intVal :: Parser Expr
+intVal = IntValue <$> integer
 
 expr :: Parser Expr
-expr = Ex.buildExpressionParser table factor
+expr = Ex.buildExpressionParser binops factor
 
 variable :: Parser Expr
 variable = do
+  typ <- typeSpecifier
   var <- identifier
-  return $ Var var
+  return $ Var typ var
 
 function :: Parser Expr
 function = do
-  reserved "int"
-  reserved "void"
+  typ <- typeSpecifier
   name <- identifier
   args <- parens $ many variable
   body <- expr
-  return $ Function name args body
+  return $ Function typ name args body
 
 call :: Parser Expr
 call = do
@@ -45,11 +49,11 @@ call = do
   return $ Call name args
 
 factor :: Parser Expr
-factor = try int
+factor = try intVal
       <|> try function
-      <|> try call
+      <|> call
       <|> variable
-      <|> parens expr
+      <|> (parens expr)
 
 defn :: Parser Expr
 defn = try function

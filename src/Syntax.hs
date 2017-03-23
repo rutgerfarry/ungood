@@ -1,18 +1,17 @@
 module Syntax where
 
-type Name = String
+type ID = String
+
+data TypeSpecifier = Int | Void
+  deriving (Eq, Ord, Show)
 
 data Expr
   = IntValue Integer
-  | Var TypeSpecifier Name
+  | VoidValue
+  | VarDeclaration TypeSpecifier ID
   | BinOp Op Expr Expr
-  | Call Name [Expr]
-  | Function TypeSpecifier Name [Expr] Expr
-  deriving (Eq, Ord, Show)
-
-data TypeSpecifier
-  = Int
-  | Void
+  | Call ID [Expr]
+  | FunDeclaration TypeSpecifier ID [Expr] [Expr]
   deriving (Eq, Ord, Show)
 
 data Op

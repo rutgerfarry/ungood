@@ -17,13 +17,11 @@ binops = [[binary "*" Times Ex.AssocLeft,
           binary "-" Minus Ex.AssocLeft]]
 
 typeSpecifier :: Parser TypeSpecifier
-typeSpecifier = do 
-  t <- choice [reserved "int" >> return Int
-              , reserved "void" >> return Void]
-  return t
+typeSpecifier = choice [reserved "int" >> return Int
+                       , reserved "void" >> return Void]
 
-intVal :: Parser Expr
-intVal = IntValue <$> integer
+int :: Parser Expr
+int = IntValue <$> integer
 
 expr :: Parser Expr
 expr = Ex.buildExpressionParser binops factor
@@ -32,15 +30,15 @@ variable :: Parser Expr
 variable = do
   typ <- typeSpecifier
   var <- identifier
-  return $ Var typ var
+  return $ VarDeclaration typ var
 
 function :: Parser Expr
 function = do
   typ <- typeSpecifier
   name <- identifier
-  args <- parens $ many variable
-  body <- expr
-  return $ Function typ name args body
+  args <- parens $ commaSep variable
+  body <- braces $ expr
+  return $ FunDeclaration typ name args body
 
 call :: Parser Expr
 call = do
@@ -49,11 +47,11 @@ call = do
   return $ Call name args
 
 factor :: Parser Expr
-factor = try intVal
-      <|> try function
+factor = try int
+      <|> function
       <|> call
       <|> variable
-      <|> (parens expr)
+      <|> parens expr
 
 defn :: Parser Expr
 defn = try function
@@ -67,9 +65,8 @@ contents p = do
   return r
 
 toplevel :: Parser [Expr]
-toplevel = many $ do
+toplevel = do
     def <- defn
-    reservedOp ";"
     return def
 
 parseExpr :: String -> Either ParseError Expr

@@ -37,7 +37,7 @@ function = do
   typ <- typeSpecifier
   name <- identifier
   args <- parens $ commaSep variable
-  body <- braces $ expr
+  body <- braces $ semiSep expr
   return $ FunDeclaration typ name args body
 
 call :: Parser Expr
@@ -65,7 +65,7 @@ contents p = do
   return r
 
 toplevel :: Parser [Expr]
-toplevel = do
+toplevel = many $ do
     def <- defn
     return def
 
